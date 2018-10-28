@@ -27,7 +27,9 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
             if (info.split()[0].upper() == "REGISTER"):
                 self.dicc_usuario[info.split()[1]] = self.client_address[0]
                 self.wfile.write(b"Hemos recibido tu peticion\r\n\r\n")
-            
+            elif (int(info.split()[2]) == 0):
+                if(len(self.dicc_usuario) != 0):
+                    del self.dicc_usuario[info.split()[1]]
             print(self.dicc_usuario)
             self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
   
