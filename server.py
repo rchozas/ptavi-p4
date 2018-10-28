@@ -7,7 +7,7 @@ Clase (y programa principal) para un servidor de eco en UDP simple
 import socketserver
 import sys
 
-class EchoHandler(socketserver.DatagramRequestHandler):
+class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     """
     Echo server class
     """
@@ -29,7 +29,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 if __name__ == "__main__":
 
     PORT = int(sys.argv[1])
-    serv = socketserver.UDPServer(('', PORT), EchoHandler) 
+    serv = socketserver.UDPServer(('', PORT), SIPRegisterHandler) 
 
     print("Lanzando servidor UDP de eco...")
     try:
