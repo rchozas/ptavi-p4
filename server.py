@@ -6,14 +6,21 @@ Clase (y programa principal) para un servidor de eco en UDP simple
 
 import socketserver
 import sys
+import json
+import time
+
 
 class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     """
     Echo server class
     """
+    
     dicc_usuario = {}
     
     def handle(self):
+       
+        info_usuarios = {}
+        
         IP = self.client_address[0]
         print("IP cliente: ", IP)
         PORT = self.client_address[1]
@@ -25,13 +32,23 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         
         if (len(info) >= 2):
             if (info.split()[0].upper() == "REGISTER"):
-                self.dicc_usuario[info.split()[1]] = self.client_address[0]
-                self.wfile.write(b"Hemos recibido tu peticion\r\n\r\n")
-            elif (int(info.split()[2]) == 0):
-                if(len(self.dicc_usuario) != 0):
-                    del self.dicc_usuario[info.split()[1]]
-            print(self.dicc_usuario)
-            self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
+                
+                direccion = info.split()[1]
+                expiracion = int(info.split()[2])
+                expires = int(time.time()) + expiracion
+                tiempo_expiracion = time.strftime('%Y-%m-%d %H:%M:%S',
+                                                    time.gmtime(expires))
+                info_usuarios["direccion"] = self.client_address[0]
+                info_usuarios["expires"] = tiempo_expiracion
+                
+                if (expiracion == 0):
+                    if(len(self.dicc_usuario) != 0):
+                        del self.dicc_usuario[direccion]
+                elif ("@"in direccion):
+                    self.dicc_usuario[direccion] = info_usuarios
+                print(self.dicc_usuario)
+    
+                self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
   
                   
         
