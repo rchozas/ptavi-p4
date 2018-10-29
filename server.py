@@ -58,13 +58,20 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                         
                         
                 self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
-                  
+                self.json2registered()  
                   
     def register2json(self):
         file_json = json.dumps(self.dicc_usuario)
         with open("registered.json", "w") as file_json:
             json.dump(self.dicc_usuario, file_json, sort_keys=True, indent=4)
-
+           
+    def json2resgistered(self):
+        try:
+            file_json = open("registered.json", "r")
+            self.dicc_usuario = json.load(file_json)
+        except:
+            self.dicc_usuario = {}
+            
 if __name__ == "__main__":
 
     PORT = int(sys.argv[1])
