@@ -15,12 +15,11 @@ try:
     DIREC_SIP = sys.argv[4]
     EXPIRES = sys.argv[5]
 except IndexError:
-    sys.exit("Usage: client.py ip puerto register sip_address expires_value")    
-
+    sys.exit("Usage: client.py ip puerto register sip_address expires_value")
 if (LINE.split()[0] == "register"):
-    LINE = "REGISTER"+ " sip:" + LINE.split()[1] + " SIP/2.0\r\n"
+    LINE = "REGISTER" + " sip:" + LINE.split()[1] + " SIP/2.0\r\n"
     LINE += "Expires: " + EXPIRES + "\r\n\r\n"
-     
+
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.connect((SERVER, PORT))
