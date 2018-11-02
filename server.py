@@ -39,7 +39,6 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                 if (expiracion == 0):
                     del self.dicc_usuario[direccion]
                     self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
-                    
                     if(len(self.dicc_usuario) != 0):
                         del self.dicc_usuario[direccion]
                         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
@@ -48,7 +47,6 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                     self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
                 print(self.dicc_usuario)
 
-                
     def register2json(self):
         file_json = json.dumps(self.dicc_usuario)
         with open("registered.json", "w") as file_json:
