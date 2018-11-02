@@ -30,29 +30,25 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         info = line.decode('utf-8')
         if (len(info) >= 2):
             if (info.split()[0].upper() == "REGISTER"):
-                self.json2registered()
                 direccion = info.split()[1]
-                expiracion = int(info.split()[2])
+                expiracion = int(info.split()[4])
                 expires = int(time.time()) + expiracion
                 tiempo_expiracion = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(expires))
                 info_usuarios["direccion"] = self.client_address[0]
                 info_usuarios["expires"] = tiempo_expiracion
                 if (expiracion == 0):
+                    del self.dicc_usuario[direccion]
+                    self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
+                    
                     if(len(self.dicc_usuario) != 0):
                         del self.dicc_usuario[direccion]
-                elif ("@"in direccion):
+                        self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
+                elif "@" in direccion:
                     self.dicc_usuario[direccion] = info_usuarios
+                    self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
                 print(self.dicc_usuario)
 
-                for usuario in dicc_usuario:
-                    tiempo = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time()))
-                    atrib = self.dicc_usuario[usuario]
-                    valor = atrib["expires"]
-                    if (str(tiempo) > valor):
-                        del self.dicc_usuario[direccion]
-                self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
-                self.json2registered()
-
+                
     def register2json(self):
         file_json = json.dumps(self.dicc_usuario)
         with open("registered.json", "w") as file_json:
